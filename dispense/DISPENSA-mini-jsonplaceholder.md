@@ -896,3 +896,174 @@ Nella prossima parte del progetto, sostituiremo gli array con un database vero. 
 ---
 
 *Fine Parte 1 — Continua con: database vero, autenticazione, deploy*
+
+---
+
+## SESSIONE 2 — Struttura Fullstack, CORS, REST design
+
+> Argomenti della sessione del 2026-04-07
+
+---
+
+## 17. Struttura Fullstack: API + WEB separati
+
+### Perché separare backend e frontend?
+
+Nella realtà i progetti sono divisi in due cartelle distinte:
+
+```
+APPLICAZIONE_FULLSTACK/
+├── API/          ← il backend (Node/Express)
+└── WEB/          ← il frontend (HTML/CSS/JS)
+```
+
+Questo perché backend e frontend sono due "mestieri" diversi:
+- Il **backend** non sa nulla di come appare la pagina
+- Il **frontend** non sa nulla di come funziona il database
+
+Possono anche essere sviluppati da team diversi, su computer diversi, o addirittura in linguaggi diversi.
+
+### Come comunicano?
+
+Tramite HTTP — il frontend fa richieste all'API, l'API risponde con JSON:
+
+```
+Browser (WEB/)  →  fetch("http://localhost:3000/api/post")  →  Server (API/)
+                ←  [{ id:1, titolo:"..." }, ...]             ←
+```
+
+---
+
+## 18. CORS — perché il browser blocca le richieste
+
+### Il problema
+
+Quando il frontend (es. porta 5500) chiama il backend (porta 3000), il browser li vede come due "siti diversi" e blocca la richiesta per sicurezza. Questo meccanismo si chiama **CORS** (Cross-Origin Resource Sharing).
+
+È come un palazzo con un receptionist: senza autorizzazione non passi.
+
+### La soluzione
+
+Nel backend si installa il pacchetto `cors` e si aggiunge una riga:
+
+```javascript
+import cors from "cors";
+app.use(cors()); // "accetta richieste da chiunque"
+```
+
+Nel nostro progetto è già configurato in `API/server.js`.
+
+### Nella realtà
+
+In produzione si configura per accettare solo il proprio frontend:
+```javascript
+app.use(cors({ origin: "https://mia-app.com" }));
+```
+
+---
+
+## 19. Schema completo degli endpoint
+
+Tutti gli endpoint disponibili nel progetto:
+
+### /api/utenti
+| Metodo | URL | Cosa fa |
+|--------|-----|---------|
+| GET | `/api/utenti` | Lista tutti gli utenti |
+| GET | `/api/utenti?citta=Roma` | Filtra per città |
+| GET | `/api/utenti/1` | Singolo utente per id |
+| POST | `/api/utenti` | Crea nuovo utente |
+| PUT | `/api/utenti/1` | Sostituisce utente completo |
+| PATCH | `/api/utenti/1` | Aggiorna solo alcuni campi |
+| DELETE | `/api/utenti/1` | Elimina utente |
+
+### /api/post
+| Metodo | URL | Cosa fa |
+|--------|-----|---------|
+| GET | `/api/post` | Lista tutti i post |
+| GET | `/api/post?userId=1` | Post di un utente specifico |
+| GET | `/api/post/7` | Singolo post per id |
+| POST | `/api/post` | Crea nuovo post |
+| PUT | `/api/post/1` | Sostituisce post completo |
+| PATCH | `/api/post/1` | Aggiorna solo alcuni campi |
+| DELETE | `/api/post/1` | Elimina post |
+
+### /api/commenti
+| Metodo | URL | Cosa fa |
+|--------|-----|---------|
+| GET | `/api/commenti` | Lista tutti i commenti |
+| GET | `/api/commenti?postId=1` | Commenti di un post specifico |
+| GET | `/api/commenti/5` | Singolo commento per id |
+| POST | `/api/commenti` | Crea nuovo commento |
+| PUT | `/api/commenti/1` | Sostituisce commento completo |
+| PATCH | `/api/commenti/1` | Aggiorna solo alcuni campi |
+| DELETE | `/api/commenti/1` | Elimina commento |
+
+---
+
+## 20. REST API — una richiesta, una risorsa
+
+Una regola fondamentale del design REST: **ogni endpoint gestisce una sola risorsa**.
+
+Non puoi fare:
+```
+GET /api/post-con-commenti  ← NON esiste in REST
+```
+
+Devi fare due chiamate separate:
+```
+GET /api/post/1
+GET /api/commenti?postId=1
+```
+
+Poi nel **frontend** unisci i dati e li mostri insieme.
+
+L'alternativa a REST che permette query complesse si chiama **GraphQL** (argomento avanzato).
+
+---
+
+## 21. Esempi reali — app che usano questo schema
+
+Qualsiasi app moderna usa questo stesso schema REST:
+
+| App | Esempi di endpoint |
+|-----|-------------------|
+| **Reddit** | GET /post, POST /commenti, DELETE /commenti/456 |
+| **Instagram** | GET /post?userId=123, POST /post, POST /commenti |
+| **Amazon** | GET /prodotti?categoria=libri, POST /ordini, PATCH /ordini/5 |
+| **Spotify** | GET /brani, POST /playlist, DELETE /playlist/789 |
+
+La struttura è sempre la stessa — cambia solo il nome della risorsa e i campi nel body.
+
+---
+
+## 22. Possibili evoluzioni del progetto
+
+In ordine di difficoltà crescente:
+
+| Livello | Cosa aggiungere |
+|---------|----------------|
+| Facile | Validazione formato email, ordinamento (`?sort=nome`) |
+| Medio | Verificare che `userId` esista prima di creare un post, paginazione (`?page=1&limit=5`) |
+| Avanzato | Database vero (SQLite/PostgreSQL), autenticazione JWT |
+| Expert | Deploy su server reale, rate limiting, cache |
+
+---
+
+## Q&A sessione 2
+
+**D: Si possono vedere post e commenti insieme in una sola richiesta?**
+R: No, con REST no. Bisogna fare due richieste separate e unire i dati nel frontend. L'alternativa è GraphQL.
+
+**D: Il progetto è completo senza un frontend?**
+R: Sì, come API è completo. Il frontend è un progetto separato che chiama questa API tramite `fetch()`.
+
+**D: Perché `npm run dev` e non `node server.js`?**
+R: `npm run dev` usa `node --watch` che riavvia automaticamente il server ad ogni salvataggio. `node server.js` va fermato e riavviato a mano.
+
+**D: Dove vive la memoria di Claude tra una sessione e l'altra?**
+R: In `~/.claude/projects/[percorso-progetto]/memory/MEMORY.md`. È legata al percorso della cartella aperta in VSCode.
+
+---
+
+*Fine Sessione 2 — Prossimo passo: costruire il frontend in WEB/ con HTML, CSS e JavaScript*

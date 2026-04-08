@@ -2,6 +2,7 @@
 // ✅ Questo file è completo — non dovete modificarlo.
 
 import express from "express";
+import cors from "cors";
 import routeUtenti from "./routes/utenti.js";
 import routePost from "./routes/post.js";
 import routeCommenti from "./routes/commenti.js";
@@ -12,6 +13,9 @@ const PORT = 3000;
 // ============================================================
 // Middleware globali
 // ============================================================
+
+// Abilita CORS: permette al frontend (anche da file://) di chiamare questa API
+app.use(cors());
 
 // Parsa automaticamente il body JSON delle richieste
 app.use(express.json());

@@ -7,8 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Applicazione Fullstack</h1>
-    <p>Frontend connesso al backend su <code>http://localhost:3000</code></p>
+
+    <header>
+        <h1>Mini Social</h1>
+        <span>connesso a <code>localhost:3000</code></span>
+        <div id="errore"></div>
+    </header>
+
+    <main>
+        <section class="colonna">
+            <h2>Utenti</h2>
+            <div id="lista-utenti"></div>
+        </section>
+
+        <section class="colonna">
+            <h2 id="titolo-post">Post</h2>
+            <div id="lista-post">
+                <p class="placeholder">Seleziona un utente</p>
+            </div>
+        </section>
+
+        <section class="colonna">
+            <h2 id="titolo-commenti">Commenti</h2>
+            <div id="lista-commenti">
+                <p class="placeholder">Seleziona un post</p>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
