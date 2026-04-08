@@ -49,6 +49,13 @@ async function init() {
         div.innerHTML = `
             <div class="nome">${utente.nome}</div>
             <div class="dettaglio">${utente.citta}</div>
+
+        <div class="azione">
+            <a href="utente.html?id=${utente.id}">
+                Dettaglio &rarr;
+            </a>
+        </div>
+
         `;
         div.addEventListener("click", () => {
             if (rigaUtenteAttiva) rigaUtenteAttiva.classList.remove("attivo");
@@ -116,3 +123,47 @@ async function caricaCommenti(postId) {
 
 // Avviamo l'app
 init();
+
+document.getElementById("btn-aggiungi").addEventListener("click", aggiungiUtente);
+
+
+async function aggiungiUtente() {
+    // leggi i valori dagli input
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+    const citta = document.getElementById('citta').value;
+
+    if (!nome || !email) {
+    mostraErrore("Nome e email sono obbligatori!");
+    return;
+}
+
+
+    // console.log per verificare
+    console.log("Dati recuperati dagli input:");
+    console.log("Nome:", nome);
+    console.log("Email:", email);
+    console.log("Città:", citta);
+
+
+    const res = await fetch(`${API_URL}/api/utenti`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome, email, citta })
+});
+
+    if (res.ok) {
+        console.log("Utente salvato!");
+        listaUtenti.innerHTML = "";
+        await init();
+        document.getElementById("nome").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("citta").value = "";
+    } else {
+        const errore = await res.json();
+        mostraErrore(errore.errore);
+    }
+
+
+
+}

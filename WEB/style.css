@@ -134,3 +134,48 @@ main {
     font-size: 0.9rem;
     font-style: italic;
 }
+
+.azione a {
+ text-decoration: none;
+}
+
+
+.form-sezione {
+    padding: 2rem;
+    border-top: 1px solid #333;
+    max-width: 400px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #1a1a2e;
+}
+
+input {
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #1a1a2e;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.6rem 1.5rem;
+    background-color: #4f6ef7;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+

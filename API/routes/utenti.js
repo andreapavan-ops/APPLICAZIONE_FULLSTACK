@@ -95,6 +95,12 @@ router.post("/", (req, res) => {
         return res.status(400).json({ errore: "nome e email sono obbligatori" });
     }
 
+    // 2b. Controlliamo che l'email non sia già registrata
+    const emailEsistente = utenti.find(u => u.email === email);
+    if (emailEsistente) {
+        return res.status(409).json({ errore: "Email già registrata" });
+    }
+
     // 3. Creiamo il nuovo oggetto utente
     const nuovoUtente = {
         id: prossimoId("utenti"), // genera il prossimo ID disponibile
