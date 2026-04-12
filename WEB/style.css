@@ -135,8 +135,32 @@ main {
     font-style: italic;
 }
 
+.azione {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
 .azione a {
- text-decoration: none;
+    text-decoration: none;
+    font-size: 0.8rem;
+    color: #4f6ef7;
+}
+
+.btn-delete {
+    padding: 0.2rem 0.4rem;
+    background: transparent;
+    color: #cc0000;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    line-height: 1;
+}
+
+.btn-delete:hover {
+    background: #fff0f0;
 }
 
 

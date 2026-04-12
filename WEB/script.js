@@ -49,14 +49,30 @@ async function init() {
         div.innerHTML = `
             <div class="nome">${utente.nome}</div>
             <div class="dettaglio">${utente.citta}</div>
-
-        <div class="azione">
-            <a href="utente.html?id=${utente.id}">
-                Dettaglio &rarr;
-            </a>
-        </div>
-
+            <div class="azione">
+                <a href="utente.html?id=${utente.id}">Dettaglio &rarr;</a>
+            </div>
         `;
+
+        const btnElimina = document.createElement("button");
+        btnElimina.innerText = "🗑️";
+        btnElimina.classList.add("btn-delete");
+
+        btnElimina.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            if (!confirm("Sei sicuro di voler eliminare questo utente?")) return;
+            const response = await fetch(`${API_URL}/api/utenti/${utente.id}`, {
+                method: "DELETE"
+            });
+            if (response.ok) {
+                div.remove();
+            } else {
+                mostraErrore("Errore durante l'eliminazione.");
+            }
+        });
+
+        div.querySelector(".azione").appendChild(btnElimina);
+
         div.addEventListener("click", () => {
             if (rigaUtenteAttiva) rigaUtenteAttiva.classList.remove("attivo");
             div.classList.add("attivo");
