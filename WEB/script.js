@@ -73,6 +73,54 @@ async function init() {
 
         div.querySelector(".azione").appendChild(btnElimina);
 
+        const btnModifica = document.createElement("button");
+        btnModifica.innerText = "✏️";
+        btnModifica.classList.add("btn-edit");
+
+        btnModifica.addEventListener("click", async (e) => {
+            e.stopPropagation();
+
+            const divNome  = div.querySelector(".nome");
+            const divCitta = div.querySelector(".dettaglio");
+
+            // Modalità MODIFICA — mostra gli input
+            if (btnModifica.innerText === "✏️") {
+                const inputNome  = document.createElement("input");
+                inputNome.value  = divNome.textContent;
+                const inputCitta = document.createElement("input");
+                inputCitta.value = divCitta.textContent;
+
+                divNome.innerHTML  = "";
+                divNome.appendChild(inputNome);
+                divCitta.innerHTML = "";
+                divCitta.appendChild(inputCitta);
+
+                btnModifica.innerText = "💾";
+
+            // Modalità SALVA — invia al server
+            } else {
+                const nuovoNome  = divNome.querySelector("input").value;
+                const nuovaCitta = divCitta.querySelector("input").value;
+
+                const response = await fetch(`${API_URL}/api/utenti/${utente.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: nuovoNome, citta: nuovaCitta })
+                });
+
+                if (response.ok) {
+                    divNome.textContent  = nuovoNome;
+                    divCitta.textContent = nuovaCitta;
+                    btnModifica.innerText = "✏️";
+                } else {
+                    mostraErrore("Errore durante la modifica.");
+                }
+            }
+        });
+
+        div.querySelector(".azione").appendChild(btnModifica);
+
+
         div.addEventListener("click", () => {
             if (rigaUtenteAttiva) rigaUtenteAttiva.classList.remove("attivo");
             div.classList.add("attivo");

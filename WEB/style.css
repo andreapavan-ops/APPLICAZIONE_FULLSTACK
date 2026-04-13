@@ -163,6 +163,21 @@ main {
     background: #fff0f0;
 }
 
+.btn-edit {
+    padding: 0.2rem 0.4rem;
+    background: transparent;
+    color: #2a7a2a;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    line-height: 1;
+}
+
+.btn-edit:hover {
+    background: #f0fff0;
+}
+
 
 .form-sezione {
     padding: 2rem;
@@ -202,4 +217,8 @@ button {
     cursor: pointer;
 }
 
-
+.edit-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px;
+}
